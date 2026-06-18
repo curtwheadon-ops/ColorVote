@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Status">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.json">
+<title>Status</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  body {
+    background: #9E9E9E;
+    transition: background 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, sans-serif;
+  }
+
+  #status-label {
+    font-size: clamp(28px, 10vw, 52px);
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  #hint {
+    position: absolute;
+    bottom: 40px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    line-height: 1.6;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+
+  #swipe-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    opacity: 0;
+    transition: opacity 0.15s;
+    pointer-events: none;
+  }
+
+  body.hide-hint #hint { opacity: 0; }
+</style>
+</head>
+<body>
+
+<div id="swipe-indicator"></div>
+<div id="status-label">Ready</div>
+<div id="hint">Swipe up · down to change<br>Swipe left · right to reset</div>
+
+<script>
+const STATES = ['grey', 'green', 'yellow', 'red'];
+const COLORS = {
+  grey:   { bg: '#9E9E9E', label: 'Ready' },
+  green:  { bg: '#388E3C', label: 'Go' },
+  yellow: { bg: '#F9A825', label: 'Caution' },
+  red:    { bg: '#C62828', label: 'Stop' }
+};
+
+let currentIndex = 0; // 0=grey, 1=green, 2=yellow, 3=red
+
+const body = document.body;
+const label = document.getElementById('status-label');
+const hint  = document.getElementById('hint');
+
+function applyState(idx) {
+  currentIndex = Math.max(0, Math.min(3, idx));
+  const key = STATES[currentIndex];
+  body.style.background = COLORS[key].bg;
+  label.textContent = COLORS[key].label;
+  if (currentIndex !== 0) body.classList.add('hide-hint');
+  else body.classList.remove('hide-hint');
+}
+
+let startX = 0, startY = 0;
+const MIN_SWIPE = 40;
+
+body.addEventListener('touchstart', e => {
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+}, { passive: true });
+
+body.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - startX;
+  const dy = e.changedTouches[0].clientY - startY;
+  const absDx = Math.abs(dx), absDy = Math.abs(dy);
+
+  if (absDx < MIN_SWIPE && absDy < MIN_SWIPE) return;
+
+  if (absDx > absDy) {
+    // Horizontal → reset
+    applyState(0);
+  } else {
+    // Vertical
+    if (dy < 0) {
+      // Swipe up → go toward red: grey→green→yellow→red
+      applyState(currentIndex + 1);
+    } else {
+      // Swipe down → go toward green: red→yellow→green→grey
+      applyState(currentIndex - 1);
+    }
+  }
+}, { passive: true });
+
+// Hide hint after first interaction
+body.addEventListener('touchstart', () => {
+  setTimeout(() => hint.style.display = 'none', 8000);
+}, { once: true });
+
+applyState(0);
+</script>
+</body>
+</html>
