@@ -1,6 +1,6 @@
 {
-    "name": "Status Indicator",
-    "short_name": "Status",
+        "name": "ColorVote",
+        "short_name": "ColorVote",
     "description": "Swipe-controlled color status indicator",
     "start_url": "/ColorVote/index.html",
     "display": "fullscreen",
