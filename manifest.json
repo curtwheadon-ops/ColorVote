@@ -1,22 +1,22 @@
 {
-  "name": "Status Indicator",
-  "short_name": "Status",
-  "description": "Swipe-controlled color status indicator",
-  "start_url": "/index.html",
-  "display": "fullscreen",
-  "background_color": "#9E9E9E",
-  "theme_color": "#9E9E9E",
-  "orientation": "portrait",
-  "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icon.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+    "name": "Status Indicator",
+    "short_name": "Status",
+    "description": "Swipe-controlled color status indicator",
+    "start_url": "/ColorVote/index.html",
+    "display": "fullscreen",
+    "background_color": "#9E9E9E",
+    "theme_color": "#9E9E9E",
+    "orientation": "portrait",
+    "icons": [
+          {
+                  "src": "icon.png",
+                  "sizes": "192x192",
+                  "type": "image/png"
+          },
+          {
+                  "src": "icon.png",
+                  "sizes": "512x512",
+                  "type": "image/png"
+          }
+    ]
 }
